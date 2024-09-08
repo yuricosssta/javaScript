@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Enviar Dados</title>
+</head>
+<body>
+    <h1>Enviar Dados para o Servidor</h1>
+    
+    <form id="contactForm">
+        <label for="names">Nomes (separados por vírgula):</label><br>
+        <input type="text" id="names" name="names" placeholder="Gustavo, Vanderson, Henrique, Thiago" required><br><br>
+        
+        <label for="message">Mensagem:</label><br>
+        <textarea id="message" name="message" placeholder="Oi pessoal, sou o Gustavo, ..."></textarea><br><br>
+        
+        <button type="submit">Enviar</button>
+    </form>
+
+    <p id="responseMessage"></p>
+
+    <script>
+        document.getElementById('contactForm').addEventListener('submit', function(event) {
+            event.preventDefault(); // Impede o envio padrão do formulário
+            
+            const namesInput = document.getElementById('names').value;
+            const messageInput = document.getElementById('message').value;
+
+            // Converte o texto dos nomes em um array
+            const namesArray = namesInput.split(',').map(name => name.trim());
+
+            const data = {
+                names: namesArray,
+                message: messageInput
+            };
+
+            fetch('https://fsdt-contact.onrender.com/contact', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(data),
+            })
+            .then(response => response.json())
+            .then(data => {
+                document.getElementById('responseMessage').textContent = 'Dados enviados com sucesso!';
+                console.log('Success:', data);
+            })
+            .catch((error) => {
+                document.getElementById('responseMessage').textContent = 'Erro ao enviar dados.';
+                console.error('Error:', error);
+            });
+        });
+    </script>
+</body>
+</html>
